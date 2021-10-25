@@ -62,7 +62,7 @@
 
 遍历 `haystack` 的每个字符，以其为起点，后面的`needle.size()` 个字符和 `needle` 逐一比较。
 
-- 时间复杂度：O(n^2)
+- 时间复杂度：O(n*m)
 
 ```C++
 class Solution {
@@ -119,6 +119,10 @@ hashcode("bcde") = hashcode("abcde") - a * 31^4
 
 另外需要一个足够大的 `BASE` 用于取余。
 
+- 时间复杂度：O(n+m)
+
+
+
 ```c++
 class Solution {
 private:
@@ -153,10 +157,6 @@ public:
         int code = 0;
         for (int i = 0; i < haystack.size(); i++)
         {
-            if (haystack.size() - i < needle_size)
-            {
-                break;
-            }
 
             // add new
             code = (code * TIMES + haystack[i]) % BASE;
@@ -168,9 +168,12 @@ public:
             // delete first
             if (i >= needle_size)
             {
-                code = code - haystack[i - needle_size] * power % BASE;
+                code -= haystack[i - needle_size] * power % BASE;
+                if (code < 0)
+                    code += BASE;
             }
 
+          	// 其实需要再验证一下
             if (code == needle_code)
             {
                 return (i - needle_size + 1);
